@@ -691,9 +691,6 @@ STATUS createSampleConfiguration(PCHAR channelName, SIGNALING_CHANNEL_ROLE_TYPE 
 
     CHK(NULL != (pSampleConfiguration = (PSampleConfiguration) MEMCALLOC(1, SIZEOF(SampleConfiguration))), STATUS_NOT_ENOUGH_MEMORY);
 
-    CHK_ERR((pAccessKey = getenv(ACCESS_KEY_ENV_VAR)) != NULL, STATUS_INVALID_OPERATION, "AWS_ACCESS_KEY_ID must be set");
-    CHK_ERR((pSecretKey = getenv(SECRET_KEY_ENV_VAR)) != NULL, STATUS_INVALID_OPERATION, "AWS_SECRET_ACCESS_KEY must be set");
-    pSessionToken = getenv(SESSION_TOKEN_ENV_VAR);
     pSampleConfiguration->enableFileLogging = FALSE;
     if (NULL != getenv(ENABLE_FILE_LOGGING)) {
         pSampleConfiguration->enableFileLogging = TRUE;
@@ -713,7 +710,14 @@ STATUS createSampleConfiguration(PCHAR channelName, SIGNALING_CHANNEL_ROLE_TYPE 
     SET_LOGGER_LOG_LEVEL(logLevel);
 
     CHK_STATUS(
-        createStaticCredentialProvider(pAccessKey, 0, pSecretKey, 0, pSessionToken, 0, MAX_UINT64, &pSampleConfiguration->pCredentialProvider));
+        createLwsIotCredentialProvider(
+            "c2fg0yo5cz1ipx.credentials.iot.eu-west-1.amazonaws.com",  // IoT credentials endpoint
+            "/home/pi/iot-signaling/certificate.pem",  // path to iot certificate
+            "/home/pi/iot-signaling/private.pem.key", // path to iot private key
+            "/home/pi/iot-signaling/cacert.pem", // path to CA cert
+            "KvsCameraIoTRoleAlias", // IoT role alias
+            channelName, // iot thing name, recommended to be same as your channel name
+            &pSampleConfiguration->pCredentialProvider));
 
     pSampleConfiguration->mediaSenderTid = INVALID_TID_VALUE;
     pSampleConfiguration->signalingClientHandle = INVALID_SIGNALING_CLIENT_HANDLE_VALUE;
@@ -1029,7 +1033,7 @@ STATUS freeSampleConfiguration(PSampleConfiguration* ppSampleConfiguration)
         CVAR_FREE(pSampleConfiguration->cvar);
     }
 
-    freeStaticCredentialProvider(&pSampleConfiguration->pCredentialProvider);
+    freeIotCredentialProvider(&pSampleConfiguration->pCredentialProvider);
 
     if (IS_VALID_TIMER_QUEUE_HANDLE(pSampleConfiguration->timerQueueHandle)) {
         if (pSampleConfiguration->iceCandidatePairStatsTimerId != MAX_UINT32) {
