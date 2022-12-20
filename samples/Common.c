@@ -163,7 +163,7 @@ PVOID mediaSenderRoutine(PVOID customData)
 
     MUTEX_LOCK(pSampleConfiguration->sampleConfigurationObjLock);
     while (!ATOMIC_LOAD_BOOL(&pSampleConfiguration->connected) && !ATOMIC_LOAD_BOOL(&pSampleConfiguration->appTerminateFlag)) {
-        CVAR_WAIT(pSampleConfiguration->cvar, pSampleConfiguration->sampleConfigurationObjLock, 5 * HUNDREDS_OF_NANOS_IN_A_SECOND);
+        CVAR_WAIT(pSampleConfiguration->cvar, pSampleConfiguration->sampleConfigurationObjLock, 15 * HUNDREDS_OF_NANOS_IN_A_SECOND);
     }
     MUTEX_UNLOCK(pSampleConfiguration->sampleConfigurationObjLock);
 

@@ -587,12 +587,12 @@ extern "C" {
 /**
  * Default signaling connection establishment timeout
  */
-#define SIGNALING_CONNECT_TIMEOUT (5 * HUNDREDS_OF_NANOS_IN_A_SECOND)
+#define SIGNALING_CONNECT_TIMEOUT (15 * HUNDREDS_OF_NANOS_IN_A_SECOND)
 
 /**
  * Default timeout for sending data
  */
-#define SIGNALING_SEND_TIMEOUT (5 * HUNDREDS_OF_NANOS_IN_A_SECOND)
+#define SIGNALING_SEND_TIMEOUT (15 * HUNDREDS_OF_NANOS_IN_A_SECOND)
 
 /**
  * Default timeout for deleting a channel

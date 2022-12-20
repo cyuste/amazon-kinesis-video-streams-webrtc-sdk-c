@@ -150,7 +150,7 @@ INT32 main(INT32 argc, CHAR* argv[])
         while (!ATOMIC_LOAD_BOOL(&pSampleStreamingSession->candidateGatheringDone)) {
             CHK_WARN(!ATOMIC_LOAD_BOOL(&pSampleStreamingSession->terminateFlag), STATUS_OPERATION_TIMED_OUT,
                      "application terminated and candidate gathering still not done");
-            CVAR_WAIT(pSampleConfiguration->cvar, pSampleConfiguration->sampleConfigurationObjLock, 5 * HUNDREDS_OF_NANOS_IN_A_SECOND);
+            CVAR_WAIT(pSampleConfiguration->cvar, pSampleConfiguration->sampleConfigurationObjLock, 15 * HUNDREDS_OF_NANOS_IN_A_SECOND);
         }
 
         MUTEX_UNLOCK(pSampleConfiguration->sampleConfigurationObjLock);
